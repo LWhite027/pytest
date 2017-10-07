@@ -33,6 +33,18 @@ import kNN
 # print(minVals)
 
 
-#5测试分类器对约会网站的错误率
-kNN.datingClassTest()
+# #5测试分类器对约会网站的错误率
+# kNN.datingClassTest()
 
+
+# #6测试约会网站
+# kNN.classifyPerson()
+
+
+# #7测试img2vector函数
+# testVector = kNN.img2vector(r'c:\Users\Administrator\Desktop\ING\pytest\MLinAction\Ch02\testDigits\0_13.txt')
+# print(testVector[0,0:31])
+# print(testVector[0,32:63])
+
+#8测试手写识别函数
+kNN.handwritingClassTest()

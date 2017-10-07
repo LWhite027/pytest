@@ -78,6 +78,61 @@ def datingClassTest():
             print("different!")
     print("the total error rate is: %f" % (errorCount/float(numTestVecs)))
 
+#约会网站预测
+def classifyPerson():
+    resultList = ['not at all', 'in small doses', 'in large doses']
+    percentTats = float(input("percentage of time spent playing video games?"))
+    ffMiles = float(input("frequent flier miles earned per year?"))
+    iceCream = float(input("liters of ice cream consumed per year?"))
+    datingDataMat,datingLabels = file2matrix(r'c:\Users\Administrator\Desktop\ING\pytest\MLinAction\Ch02\datingTestSet2.txt')      #读取数据
+    normMat, ranges, minVals = autoNorm(datingDataMat)
+    inArr = array([ffMiles,percentTats,iceCream])
+    classifierResult = classify0((inArr-minVals)/ranges,normMat,datingLabels,3)
+    print("You will probably like this person:", resultList[classifierResult-1])
+
+
+import os, sys
+def img2vector(filename):
+    returnVect = zeros((1,1024))    #每个手写识别为32x32大小的二进制图像矩阵 转换为1x1024 numpy向量数组returnVect
+    fr = open(filename)             #打开指定文件
+    for i in range(32):
+        lineStr = fr.readline()
+        for j in range(32):
+            returnVect[0,32*i+j] = int(lineStr[j])      #将每行的32个字符值存储在nupy数组中
+    return returnVect
+
+def handwritingClassTest():
+    hwLabels = []
+    trainingFileList = os.listdir(r'c:\Users\Administrator\Desktop\ING\pytest\MLinAction\Ch02\trainingDigits')
+    m = len(trainingFileList)
+    trainingMat = zeros((m,1024))           #定义文件数x每个向量的训练集
+    for i in range(m):
+        fileNameStr = trainingFileList[i]
+        fileStr = fileNameStr.split('.')[0]             #解析文件
+        classNumStr = int(fileStr.split('_')[0])       #解析文件名
+        hwLabels.append(classNumStr)                    #存储类别
+        trainingMat[i,:] = img2vector(r'c:\Users\Administrator\Desktop\ING\pytest\MLinAction\Ch02\trainingDigits/%s'%fileNameStr) #访问第i个文件内的数据trainingMat[i,:] = img2vector('trainingDigits/%s'%fileNameStr)      #访问第i个文件内的数据
+    #测试数据
+    testFileList = os.listdir(r'c:\Users\Administrator\Desktop\ING\pytest\MLinAction\Ch02\testDigits')
+    errorCount = 0.0
+    mTest = len(testFileList)
+    for i in range(mTest):
+        fileNameStr = testFileList[i]
+        fileStr = fileNameStr.split('.')[0]
+        classNumStr = int(fileStr.split('_')[0])            #从文件名中分离出数字作为基准
+        vectorUnderTest = img2vector(r'c:\Users\Administrator\Desktop\ING\pytest\MLinAction\Ch02\trainingDigits/%s'%fileNameStr)       #访问第i个文件内的测试数据，不存储类 直接测试
+        classifierResult = classify0(vectorUnderTest,trainingMat,hwLabels,3)
+        print("the classifier came back with: %d,the real answer is: %d" %(classifierResult,classNumStr))
+        if(classifierResult != classNumStr):
+            errorCount+=1.0
+        print("\nthe total number of errors is: %d" % errorCount)
+        print("\nthe total rate is:%f"% (errorCount/float(mTest)))
+
+
+
+
+
+
 
 
 
